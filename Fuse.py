@@ -11,21 +11,20 @@ def fuse(pokemon):
 
 
 def algFuse(table, diagonal):
-    for i in range(len(table) - diagonal):
-        max = [0,0,0]
+    for diagonal in range(1, len(table)):
+        for i in range(len(table) - diagonal):
+            max = [0,0,0]
         
-        for k in range(diagonal):
+            for k in range(diagonal):
             
-            if max[1] < table[i][k + i][2]*table[i][k + i][1] + table[i+k +1][diagonal + i][0]*table[i+k + 1][diagonal+ i][1]:
-                max = [table[i][k + i][0], int(table[i][i+k][2]*table[i][i+k][1] + table[i+k+1][diagonal+i][0]*table[i+1+k][diagonal+i][1]), table[1+i+k][diagonal+i][2]]
+                if max[1] < table[i][k + i][2]*table[i][k + i][1] + table[i+k +1][diagonal + i][0]*table[i+k + 1][diagonal+ i][1]:
+                    max = [table[i][k + i][0], int(table[i][i+k][2]*table[i][i+k][1] + table[i+k+1][diagonal+i][0]*table[i+1+k][diagonal+i][1]), table[1+i+k][diagonal+i][2]]
         
-        table[i][i + diagonal] = max
+            table[i][i + diagonal] = max
         
         
-    if diagonal < len(table) -1:
-        return algFuse(table, diagonal+1)
-    else:
-        return table[0][len(table) -1][1]
+    
+    return table[0][len(table) -1][1]
         
 if __name__ == "__main__":
     main()
