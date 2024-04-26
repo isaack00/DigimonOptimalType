@@ -134,6 +134,7 @@ class TreeMap:
         for i in self.solulus:
             if i[2] == order[len(order) - 1]:
                 cur  = i[0]
+                order.append(cur)
                 break
         while firstSearch[0][cur] != 0:
             cur = firstSearch[1][cur]

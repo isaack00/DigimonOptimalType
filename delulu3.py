@@ -88,6 +88,7 @@ class TreeMap:
         for i in self.solulus:
             if i[2] == order[len(order) - 1]:
                 cur  = i[0]
+                order.append(cur)
                 break
         while firstSearch[0][cur] != 0:
             cur = firstSearch[1][cur]
@@ -173,12 +174,22 @@ b =  [(0,1,4), (1,2,2), (2,3,3), (3,4,1), (1,5,2),
         (5,6,5), (6,3,2), (6,4,3), (1,7,4), (7,8,2),
         (8,7,2), (7,3,2), (8,0,11), (4,3,1), (4,8,10)]
 
-tree = TreeMap(b,  [(5,10,0), (6,1,6), (7,5,7), (0,5,2), (8,4,8)])
+#tree = TreeMap(b,  [(5,10,0), (6,1,6), (7,5,7), (0,5,2), (8,4,8)])
 #print(tree.escape(1, [3, 4]))
 #print(tree.escape(1, [4]))
 
-a = [(0, (1,1), (2,3)), (1,(2,1)), (2,(3,1)), (3,(5,1)), (4,(5,1)), (5,)]
+#a = [(0, (1,1), (2,3)), (1,(2,1)), (2,(3,1)), (3,(5,1)), (4,(5,1)), (5,)]
 #print(dijkstra(a, 0))
+
+roads = [(0, 1, 1), (2, 1, 1), (3, 1, 1)]
+solulus = [(1, 10, 2), (1, 100, 3)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [3]) == (101, [0, 1, 3])
+assert myforest.escape(0, [2]) == (11, [0, 1, 2]) # fast
+assert myforest.escape(0, [2, 3]) == (11, [0, 1, 2]) # fast
+assert myforest.escape(0, [0]) == None # no path
+assert myforest.escape(3, [3]) == (101, [3, 1, 3])
+assert myforest.escape(3, [2,3]) == (11, [3, 1, 2])
 
 
 
