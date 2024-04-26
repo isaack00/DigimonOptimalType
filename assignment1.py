@@ -219,4 +219,3 @@ def relax(u, v, weight, dist, pred, heap) -> None:
         dist[v] = dist[u] + weight
         heappush(heap, (dist[v], v))
         pred[v] = u
-

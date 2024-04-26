@@ -189,51 +189,68 @@ b =  [(0,1,4), (1,2,2), (2,3,3), (3,4,1), (1,5,2),
 
 
 
-# One path only, requires all nodes twice.
-forest3 = TreeMap([(0,1,10),(1,2,20),(2,3,15)], [(3,30,0)])
-print(forest3.escape(0, [3]), (120, [0,1,2,3,0,1,2,3]))
+# no solulus
+roads = [(0,3,1), (3,4,1), (3,1,1), (3,2,1)]
+solulus = []
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [0, 1, 2, 3, 4]) == None
 
-# Many paths. Solution requires all nodes twice.
-forest4 = TreeMap([(0,1,1),(1,2,2),(2,3,1), (3,0,3),(3,2,4),(2,1,3)], [(3,2,0),(1,10,3),(0,7,0)])
-print(forest4.escape(0, [3]) == (10, [0,1,2,3,0,1,2,3]))
+    # exit not reachable
+roads = [(0,3,1), (3,4,1), (3,1,1), (3,2,1)]
+solulus = [(2,10,1)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [3]) == None
 
+    # exit only reachable via 2nd solulu tree
+    # therefore no path since we can only destroy ONE solulu
+roads = [(0,1,1), (0,2,1), (3,1,1)]
+solulus = [(2,10,3), (3, 10, 0)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [0]) == None
+assert myforest.escape(0, [2]) == None
+assert myforest.escape(2, [0, 2]) == None
 
-# Every tree is a solulu tree
-forest7 = TreeMap([(0,1,3),(1,0,2),(1,2,3),(2,0,1),(2,3,4),(3,0,6)], [(0,4,2),(1,4,3),(2,5,2),(3,7,3)])
-print(forest7.escape(0, [0]), (5, [0,2,0]))
-print(forest7.escape(0, [1]) == (8, [0,2,0,1]))
-print(forest7.escape(0, [2]) == (4, [0,2]))
-print(forest7.escape(0, [3]) == (7, [0,1,3]))
-print(forest7.escape(0, [0,1,2,3]) == (4, [0,2])) # All exits
-print(forest7.escape(2, [0,1,3]), (6, [2,0]))
+    # must take the long path to reach exit
+roads = [(0, 1, 1000), (1, 2, 1000), (2, 3, 1000), (3, 4, 1000), (4, 5, 1000), (0,5, 5)]
+solulus = [(4,1,5)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [5]) == (4001, [0, 1, 2, 3, 4, 5])
+assert myforest.escape(0, [0, 1, 2, 3, 4, 5]) == (4001, [0, 1, 2, 3, 4, 5])
 
-print(forest7.escape(2, [0,1,2,3]), (5, [2])) # All exits
-print(forest7.escape(3, [0,1,2]) == (10, [3,0,2]))
-print(forest7.escape(3, [0,1,2,3]), (7, [3])) # All exits
+    # must take 2nd longest path to exit
+roads = [(0, 1, 1000), (1, 2, 1000), (2, 3, 1000), (3, 4, 1000), (4, 5, 1000), (0,5, 5), (0, 6, 100), (6, 4, 100)]
+solulus = [(4,1,5)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [5]) == (201, [0, 6, 4, 5])
+assert myforest.escape(0, [1, 3, 6, 5]) == (201, [0, 6, 4, 5])
 
-# Only two trees
-forest8 = TreeMap([(0,1,20)], [(1,100,0)])
-print(forest8.escape(0, [0]) == (120, [0,1,0]))
-print(forest8.escape(0, [1]) == (140, [0,1,0,1]))
-print(forest8.escape(1, [0]) == (100, [1,0]))
+    # 2T path length
+roads = [(0, 1, 1), (1, 2, 1), (2, 3, 1), (3, 4, 1)]
+solulus = [(4, 100, 0)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [4]) == (108, [0, 1, 2, 3, 4, 0, 1, 2, 3, 4])
+assert myforest.escape(0, [3]) == (107, [0, 1, 2, 3, 4, 0, 1, 2, 3])
 
-# Some paths don't have solutions
-forest9 = TreeMap([(0,2,10), (1,2,1), (0,3,5)], [(2,25,0), (3,30,2)])
-print(forest9.escape(0, [0]) == (35, [0,2,0]))
-print(forest9.escape(0, [1]) == None)
-print(forest9.escape(0, [0,1,2,3]) == (35, [0,2,0]))
-print(forest9.escape(1, [0]) == (26, [1,2,0]))
-print(forest9.escape(0, [1,3]) == (40, [0,2,0,3]))
-print(forest9.escape(3, [0,1,3]) == None)
-print(forest9.escape(3, [0,1,2,3]) == (30, [3,2]))
+    # must cut down slow solulu tree
+roads = [(0, 1, 1), (2, 1, 1), (3, 0, 1), (0, 4, 1)]
+solulus = [(1, 10, 2), (4, 100, 3)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [3]) == (101, [0, 4, 3])
+assert myforest.escape(0, [2]) == (11, [0, 1, 2]) # fast
+assert myforest.escape(0, [2, 3]) == (11, [0, 1, 2]) # fast
+assert myforest.escape(0, [0]) == (102, [0,4,3,0]) # no path
+assert myforest.escape(3, [3]) == (102, [3, 0, 4, 3])
+assert myforest.escape(3, [2,3]) == (12, [3, 0, 1, 2])
 
-# Some nodes not connected (not applicable according to the assignment spec)
-#forest10 = TreeMap([(0,10,4), (10,12,3), (12,13,7), (13,0,9), (0,13,21)], [(13,5,10), (12,2,9), (4,10,4)])
-#print(forest10.escape(0, [0]) == (38, [0,10,12,13,10,12,13,0]))
-#print(forest10.escape(0, [0,1,2,3,4,5,6,7,8,9,10]) == (9, [0,10,12,9]))
-#print(forest10.escape(0, [0,1,2,3,4,5,6,7,8,10]) == (19, [0,10,12,13,10]))
-#print(forest10.escape(0, [5,6,7]) == None)
-#print(forest10.escape(9, [0,4,5,10]) == None)
-#print(forest10.escape(5, [0,4,5,9,10]) == None)
-#print(forest10.escape(4, [0,5,9,10]) == None)
-#print(forest10.escape(4, [0,4,5,9,10]) == (10, [4]))
+    # no roads taken
+roads = [(0,1, 1)]
+solulus = [(0, 5, 0)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [0]) == (5, [0])
+assert myforest.escape(0, [1]) == (6, [0, 1]) # 1 road taken
+
+roads = [(0,1, 1)]
+solulus = [(0, 5, 1)]
+myforest = TreeMap(roads, solulus)
+assert myforest.escape(0, [1]) == (5, [0, 1])
+assert myforest.escape(0, [0]) == None
