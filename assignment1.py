@@ -131,14 +131,18 @@ class TreeMap:
             
             cur = secondSearch[1][cur]
         cur = order[len(order) - 1]
+        
         for i in self.solulus:
-            if i[2] == order[len(order) - 1]:
+            if i[2] == cur and secondSearch[0][i[2]] - i[1] == firstSearch[0][i[0]]:
                 cur  = i[0]
-                order.append(cur)
+                if order[len(order) - 1] != cur:
+                    order.append(cur)
                 break
+        
         while firstSearch[0][cur] != 0:
             cur = firstSearch[1][cur]
-            order.append(cur)
+            if order[len(order) - 1] != cur:
+                order.append(cur)
         order.reverse()
         
         return (max[0], order)
